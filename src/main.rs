@@ -5,32 +5,35 @@ fn main() -> io::Result<()> {
     let file = File::open("input")?;
     let reader = BufReader::new(file);
 
-    let mut most_calories = 0;
-    let mut second_most_calories = 0;
-    let mut third_most_calories = 0;
+    let mut lines_with_most_calories = Vec::new();
     let mut accumulated_calories = 0;
-    
 
     for line in reader.lines() {
-        let moved_line = line?;
-        if moved_line == "" {
-            if accumulated_calories >= most_calories { 
-                third_most_calories = second_most_calories;
-                second_most_calories = most_calories;
-                most_calories = accumulated_calories; 
-            } else if accumulated_calories >= second_most_calories {
-                third_most_calories = second_most_calories;
-                second_most_calories = accumulated_calories;
-            } else if accumulated_calories > third_most_calories {
-                third_most_calories = accumulated_calories;
+        let line = line?;
+        if line == "" {
+            // If the vector has fewer than three elements, we can just push the
+            // accumulated calories to the end of the vector.
+            if lines_with_most_calories.len() < 3 {
+                lines_with_most_calories.push(accumulated_calories);
+            } else {
+                // Otherwise, we need to insert the accumulated calories in the
+                // correct position in the vector.
+                for i in 0..3 {
+                    if accumulated_calories > lines_with_most_calories[i] {
+                        lines_with_most_calories.insert(i, accumulated_calories);
+                        lines_with_most_calories.pop();
+                        break;
+                    }
+                }
             }
             accumulated_calories = 0;
         } else {
-            accumulated_calories = accumulated_calories + moved_line.parse::<u32>().unwrap();
+            accumulated_calories = accumulated_calories + line.parse::<u32>().unwrap();
         }
     }
 
-    println!("{}", most_calories + second_most_calories + third_most_calories);
+    let sum: u32 = lines_with_most_calories.iter().sum();
+    println!("{}", sum);
 
     Ok(())
 }
