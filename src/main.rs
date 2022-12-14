@@ -18,6 +18,38 @@ fn main() -> io::Result<()> {
 
     Ok(())
 }
+
+fn parse_score(opponent_action: &str, result: &str) -> u32 {
+    match result {
+        "X" => {    // Lose
+            match opponent_action {
+                "A" => 3,
+                "B" => 1,
+                "C" => 2,
+                &_ => todo!(),
+            }
+        },
+        "Y" => {    // Draw
+            3 + match opponent_action {
+                "A" => 1,
+                "B" => 2,
+                "C" => 3,
+                &_ => todo!(),
+            }
+        },
+        "Z" => {    // Win
+            6 + match opponent_action {
+                "A" => 2,
+                "B" => 3,
+                "C" => 1,
+                &_ => todo!(),
+            }
+        },
+        &_ => todo!(),
+    }
+}
+
+/* Part 1
 fn parse_score(opponent_action: &str, my_action: &str) -> u32 {
     match my_action {
         "X" => {
@@ -46,4 +78,4 @@ fn parse_score(opponent_action: &str, my_action: &str) -> u32 {
         },
         &_ => todo!(),
     }
-}
+} */
